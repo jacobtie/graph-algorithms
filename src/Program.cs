@@ -1,4 +1,5 @@
 ﻿using System;
+using graph_algorithms.logging;
 
 namespace graph_algorithms
 {
