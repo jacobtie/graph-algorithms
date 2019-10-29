@@ -13,35 +13,37 @@ namespace graph_algorithms.data_structures
     /// <typeparam name="E">The type of elements in the verticies of the graph</typeparam>
     public class Graph<E>
     {
+        private List<Vertex<E>> _vertices;
+        private List<Edge<E>> _edges;
         /// <summary>
         /// The list of vertices in the graph
         /// </summary>
         /// <value>Graph vertices</value>
-        public List<Vertex<E>> Vertices { get; }
+        public List<Vertex<E>> Vertices { get => new List<Vertex<E>>(_vertices); }
 
         /// <summary>
         /// The list of edges in the graph
         /// </summary>
         /// <value>Graph edges</value>
-        public List<Edge<E>> Edges { get; }
+        public List<Edge<E>> Edges { get => new List<Edge<E>>(_edges); }
 
         /// <summary>
         /// The type of the graph as an enum
         /// </summary>
         /// <value>Graph type enum</value>
-        public DirectedType GraphType { get; set; }
+        public DirectedType GraphType { get; }
 
         /// <summary>
         /// The number of vertices in the graph
         /// </summary>
         /// <value>Number of graph vertices</value>
-        public int NumVertices { get => Vertices.Count; }
+        public int NumVertices { get => _vertices.Count; }
 
         /// <summary>
         /// The number of edges in the graph
         /// </summary>
         /// <value>Number of graph edges</value>
-        public int NumEdges { get => Edges.Count; }
+        public int NumEdges { get => _edges.Count; }
 
         /// <summary>
         /// Graph constructor which takes in graph type enum
@@ -49,8 +51,9 @@ namespace graph_algorithms.data_structures
         /// <param name="graphType">The type of the graph</param>
         public Graph(DirectedType graphType)
         {
-            Vertices = new List<Vertex<E>>();
-            Edges = new List<Edge<E>>();
+            _vertices = new List<Vertex<E>>();
+            _edges = new List<Edge<E>>();
+
             GraphType = graphType;
         }
 
@@ -61,7 +64,7 @@ namespace graph_algorithms.data_structures
         public void InsertVertex(E element)
         {
             var v = new Vertex<E>(element);
-            Vertices.Add(v);
+            _vertices.Add(v);
         }
 
         /// <summary>
@@ -73,7 +76,27 @@ namespace graph_algorithms.data_structures
         public void InsertEdge(Vertex<E> v, Vertex<E> w, int weight)
         {
             var edgeToInsert = new Edge<E>(v, w, weight, GraphType);
-            Edges.Add(edgeToInsert);
+            _edges.Add(edgeToInsert);
+        }
+
+        /// <summary>
+        /// Gets the outward edges for a given vertex
+        /// </summary>
+        /// <param name="vertex">Source vertex</param>
+        /// <returns>Outward edges for given vertex</returns>
+        public List<Edge<E>> GetOutEdges(Vertex<E> vertex)
+        {
+            return _edges.Where(edge => edge.EndVertices.start == vertex).ToList();
+        }
+
+        /// <summary>
+        /// Inward edges to a given vertex
+        /// </summary>
+        /// <param name="vertex">Destination vertex</param>
+        /// <returns>Inward edges to given vertex</returns>
+        public List<Edge<E>> GetInEdges(Vertex<E> vertex)
+        {
+            return _edges.Where(edge => edge.EndVertices.end == vertex).ToList();
         }
 
         /// <summary>
@@ -83,7 +106,37 @@ namespace graph_algorithms.data_structures
         /// <returns>A list of incidental edges of the given vertex</returns>
         public List<Edge<E>> GetIncidentEdges(Vertex<E> vertex)
         {
-            return Edges.Where(edge => edge.EndVertices.start == vertex || edge.EndVertices.end == vertex).ToList();
+            return _edges.Where(edge => edge.EndVertices.start == vertex || edge.EndVertices.end == vertex).ToList();
+        }
+
+        /// <summary>
+        /// Get all, unique adjacent vertices to a given vertex
+        /// </summary>
+        /// <param name="vertex">Given vertex</param>
+        /// <returns>Adjacent vertices to given vertex</returns>
+        public List<Vertex<E>> GetAdjacentVertices(Vertex<E> vertex)
+        {
+            var adjacentVerticies = new List<Vertex<E>>();
+            adjacentVerticies.AddRange(GetOutEdges(vertex)
+                .Select(edge => edge.EndVertices.end));
+            if (GraphType == DirectedType.Directed)
+            {
+                adjacentVerticies.AddRange(GetInEdges(vertex)
+                    .Select(edge => edge.EndVertices.start).Except(adjacentVerticies));
+            }
+            return adjacentVerticies;
+        }
+
+        /// <summary>
+        /// Checks whether two vertices are adjacent
+        /// </summary>
+        /// <param name="v">Vertex v</param>
+        /// <param name="w">Vertex w</param>
+        /// <returns>Boolean v and w are adjacent</returns>
+        public bool AreAdjacent(Vertex<E> v, Vertex<E> w)
+        {
+            return _edges.Any(edge => (edge.EndVertices.start == v && edge.EndVertices.end == w)
+                        || (edge.EndVertices.start == w && edge.EndVertices.end == v));
         }
 
         /// <summary>
