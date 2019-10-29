@@ -119,11 +119,8 @@ namespace graph_algorithms.data_structures
             var adjacentVerticies = new List<Vertex<E>>();
             adjacentVerticies.AddRange(GetOutEdges(vertex)
                 .Select(edge => edge.EndVertices.end));
-            if (GraphType == DirectedType.Directed)
-            {
-                adjacentVerticies.AddRange(GetInEdges(vertex)
-                    .Select(edge => edge.EndVertices.start).Except(adjacentVerticies));
-            }
+            adjacentVerticies.AddRange(GetInEdges(vertex)
+                .Select(edge => edge.EndVertices.start).Except(adjacentVerticies));
             return adjacentVerticies;
         }
 
