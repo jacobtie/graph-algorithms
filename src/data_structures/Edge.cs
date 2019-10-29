@@ -7,14 +7,14 @@ namespace graph_algorithms.data_structures
     /// either directed or undirected
     /// </summary>
     /// <typeparam name="T">The type stored in the graph's vertices</typeparam>
-    public class Edge<T>
+    public class Edge<T> : IComparable<Edge<T>>
     {
         /// <summary>
         /// The type of the edge, either directed or undirected 
         /// from the graph
         /// </summary>
         /// <value>Either directed or undirected</value>
-        public DirectedType EdgeType { get; set; }
+        public DirectedType EdgeType { get; }
 
         /// <summary>
         /// The weight of the edge
@@ -40,6 +40,22 @@ namespace graph_algorithms.data_structures
             EndVertices = (start, end);
             Weight = weight;
             EdgeType = edgeType;
+        }
+
+        public int CompareTo(Edge<T> other)
+        {
+            if (this.Weight > other.Weight)
+            {
+                return 1;
+            }
+            else if (this.Weight < other.Weight)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }
