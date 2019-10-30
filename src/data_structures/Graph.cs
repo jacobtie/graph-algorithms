@@ -58,6 +58,18 @@ namespace graph_algorithms.data_structures
         }
 
         /// <summary>
+        /// Copy constructor using another graph
+        /// </summary>
+        /// <param name="other">Other graph to copy</param>
+        public Graph(Graph<E> other)
+        {
+            _vertices = new List<Vertex<E>>(other._vertices);
+            _edges = new List<Edge<E>>(other._edges);
+
+            GraphType = other.GraphType;
+        }
+
+        /// <summary>
         /// Inserts a vertex into the graph
         /// </summary>
         /// <param name="element">The element of the vertex to insert</param>
