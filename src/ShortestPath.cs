@@ -71,7 +71,7 @@ namespace graph_algorithms
             {
                 if (finalized.Contains(edge.EndVertices.end))
                 {
-                    // Remove edge from graph
+                    graph.RemoveEdge(edge);
                 }
             }
         }
