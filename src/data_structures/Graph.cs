@@ -137,6 +137,25 @@ namespace graph_algorithms.data_structures
         }
 
         /// <summary>
+        /// Removes a vertex from a graph and all edges to or from that vertex
+        /// </summary>
+        /// <param name="vertex">Vertex to remove</param>
+        public void RemoveVertex(Vertex<E> vertex)
+        {
+            _edges = _edges.Where(edge => edge.EndVertices.start != vertex && edge.EndVertices.end != vertex).ToList();
+            _vertices.Remove(vertex);
+        }
+
+        /// <summary>
+        /// Removes an edge from the graph
+        /// </summary>
+        /// <param name="edge">Edge to remove</param>
+        public void RemoveEdge(Edge<E> edge)
+        {
+            _edges.Remove(edge);
+        }
+
+        /// <summary>
         /// Builds a graph using an input file
         /// </summary>
         /// <param name="inputFile">The filepath from which to build the graph</param>
