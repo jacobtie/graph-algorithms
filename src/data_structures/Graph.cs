@@ -181,7 +181,7 @@ namespace graph_algorithms.data_structures
 
             try
             {
-                using (var reader = new StreamReader(inputFile))
+                using (var reader = new StreamReader("./input-files/" + inputFile))
                 {
                     firstLine = reader.ReadLine();
                     while (!reader.EndOfStream)
@@ -270,5 +270,54 @@ namespace graph_algorithms.data_structures
             return (builtGraph, sourceNode);
         }
 
+        public string ToAdjacencyMatrix()
+        {
+            string adjMat = "\n";
+
+            adjMat += "\t";
+
+            foreach (var x in Vertices)
+            {
+                adjMat += x.Element + "\t";
+            }
+
+            adjMat += "\n";
+
+            foreach (var x in Vertices)
+            {
+                adjMat += x.Element + "\t";
+
+                foreach (var y in Vertices)
+                {
+                    Edge<E> e;
+                    
+                    if (GraphType == DirectedType.Undirected)
+                    {
+                        e = Edges.Find(edge => (edge.EndVertices.start.Element.Equals(x.Element) &&
+                            edge.EndVertices.end.Element.Equals(y.Element)) || 
+                            (edge.EndVertices.start.Element.Equals(y.Element) &&
+                            edge.EndVertices.end.Element.Equals(x.Element)));
+                    }
+                    else
+                    {
+                        e = Edges.Find(edge => (edge.EndVertices.start.Element.Equals(x.Element) &&
+                            edge.EndVertices.end.Element.Equals(y.Element)));
+                    }   
+
+                    if (e != null)
+                    {
+                        adjMat += e.Weight + "\t";
+                    }
+                    else
+                    {
+                        adjMat += "0\t";
+                    }
+                }
+
+                adjMat += "\n";
+            }
+
+            return adjMat;
+        }
     }
 }

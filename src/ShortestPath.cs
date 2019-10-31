@@ -7,73 +7,129 @@ using System.Linq;
 
 namespace graph_algorithms
 {
-    static class ShortestPath<T> where T : struct
+    static class ShortestPath<T>
     {
         public static Graph<T> RunDijkstras(Graph<T> graph, Vertex<T> start)
         {
-            var paths = new Graph<T>(graph.GraphType);
-            var finalized = new List<Vertex<T>>();
-            var costs = new Dictionary<T, int>(graph.Vertices.Count);
-            var currentVertex = start;
-            Edge<T> shortest;
-            Vertex<T> prevVertex;
-            Edge<T> prevEdge;
+            var paths = new Graph<T>(graph);
+            var finalized = new List<T>();
+            var costs = new Dictionary<T, int>(paths.Vertices.Count);
+            Vertex<T>? currentVertex = start;
 
-            foreach (var v in graph.Vertices)
+            Console.WriteLine(graph.ToAdjacencyMatrix());
+
+            foreach (var v in paths.Vertices)
             {
                 costs.Add(v.Element, int.MaxValue);
             }
 
-            finalized.Add(currentVertex);
             costs[currentVertex.Element] = 0;
-            shortest = FindShortestEdge(graph, currentVertex);
-            currentVertex = shortest.EndVertices.end;
-            prevVertex = currentVertex;
-            prevEdge = shortest;
+            UpdateCosts(paths, currentVertex, costs);
+            finalized.Add(currentVertex.Element);
+            currentVertex = FindMinCostVertex(paths, costs, finalized);
 
             do 
             {
-                finalized.Add(currentVertex);
-                costs[currentVertex.Element] = costs[prevVertex.Element] + prevEdge.Weight;
+                UpdateCosts(paths, currentVertex, costs);
+                finalized.Add(currentVertex.Element);
 
-                RemoveEdgesInCloud(graph, finalized);
+                RemoveEdgesInCloud(paths, finalized, costs);
 
-                shortest = FindShortestEdge(graph, currentVertex);
-                currentVertex = shortest.EndVertices.end;
-                prevEdge = shortest;
+                currentVertex = FindMinCostVertex(paths, costs, finalized);
             }
-            while(finalized.Count != graph.Vertices.Count);
+            while(currentVertex != null);
+
+            Console.WriteLine(paths.ToAdjacencyMatrix());
 
             return paths;
         }
 
-        private static Edge<T> FindShortestEdge(Graph<T> graph, Vertex<T> curr)
+        private static void UpdateCosts(Graph<T> graph, Vertex<T> curr, 
+                                        Dictionary<T, int> costs)
         {
-            var incidentEdges = graph.GetIncidentEdges(curr);
-            var minEdge = incidentEdges[0];
+            List<Edge<T>> adjEdges;
 
-            foreach (var edge in incidentEdges)
+            if (graph.GraphType == DirectedType.Undirected)
             {
-                if (edge.Weight < minEdge.Weight)
-                {
-                    minEdge = edge;
-                }
+                adjEdges = graph.GetIncidentEdges(curr);
+            }
+            else
+            {
+                adjEdges = graph.GetOutEdges(curr);
             }
 
-            return minEdge;
+            foreach (var e in adjEdges)
+            {
+                var currElement = e.EndVertices.end.Element;
+                var prevElement = e.EndVertices.start.Element;
+
+                if ((costs[prevElement] + e.Weight) < costs[currElement])
+                {
+                    costs[currElement] = costs[prevElement] + e.Weight;
+                }
+            }
         }
 
-        private static void RemoveEdgesInCloud(Graph<T> graph, List<Vertex<T>> finalized)
+        private static void RemoveEdgesInCloud(Graph<T> graph, List<T> finalized, 
+                                                Dictionary<T, int> costs)
         {
-            var adjEdges = graph.GetIncidentEdges(finalized.Last());
+            List<Edge<T>> adjEdges;
+            
+            if (graph.GraphType == DirectedType.Undirected)
+            {
+                adjEdges = graph.GetIncidentEdges(graph.Vertices.Find(vertex => 
+                                                vertex.Element.Equals(finalized.Last())));
+            }
+            else
+            {
+                adjEdges = graph.GetInEdges(graph.Vertices.Find(vertex => 
+                                                vertex.Element.Equals(finalized.Last())));
+            }
 
             foreach (var edge in adjEdges)
             {
-                if (finalized.Contains(edge.EndVertices.end))
+                T element; 
+
+                if (!finalized.Last().Equals(edge.EndVertices.start.Element))
                 {
+                    element = edge.EndVertices.start.Element;
+                }
+                else
+                {
+                    element = edge.EndVertices.end.Element;
+                }
+
+                if (finalized.Contains(element) &&
+                    (edge.Weight + costs[element] > costs[finalized.Last()]))
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(finalized.Last());
+                    Console.WriteLine(element);
+                    Console.WriteLine(costs[finalized.Last()]);
+                    Console.WriteLine(edge.Weight + costs[element]);
+
                     graph.RemoveEdge(edge);
                 }
             }
+        }
+
+        private static Vertex<T>? FindMinCostVertex(Graph<T> graph, Dictionary<T, int> costs, 
+                                                    List<T> finalized)
+        {
+            T minKey = default(T);
+            int min = int.MaxValue;
+
+            foreach ((T key, int val) in costs)
+            {
+                if ((val < min && !finalized.Contains(key)) || 
+                    (val == int.MaxValue && min == int.MaxValue))
+                {
+                    minKey = key;
+                    min = val;
+                }
+            }
+
+            return graph.Vertices.Find(vertex => vertex.Element.Equals(minKey));
         }
     }
 }

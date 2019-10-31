@@ -9,6 +9,8 @@ namespace graph_algorithms
     {
         static void Main(string[] args)
         {
+            Graph<string> graph = new Graph<string>(DirectedType.Undirected);
+            Vertex<string>? start = new Vertex<string>("A");
             bool invalidInput = false;
 
             do
@@ -16,17 +18,18 @@ namespace graph_algorithms
                 try
                 {
                     string fileName = GetUserInput();
-                    Graph<string>.BuildGraphFromFile(fileName);
+                    (graph, start) = Graph<string>.BuildGraphFromFile(fileName);
                 }
                 catch(FileNotFoundException e)
                 {
+                    Logger.WriteLine(e);
                     Logger.WriteLine("File could not be found. Please try again. ");
                     invalidInput = true;
                 }
             }
             while(invalidInput);
 
-            
+            ShortestPath<string>.RunDijkstras(graph, start);
 
             Console.WriteLine("Press enter to exit....");
             Console.ReadLine();
