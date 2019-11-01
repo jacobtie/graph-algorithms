@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections.Generic;
 using graph_algorithms.logging;
 using graph_algorithms.data_structures;

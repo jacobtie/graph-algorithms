@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace assignment1.structures
+namespace graph_algorithms.data_structures
 {
-	public class MinHeap<T> where T : IComparable
+	public class MinHeap<T> where T : IComparable<T>
 	{
 		// Holds the elements in the heap using a vector based implementation
 		private List<T> _heapVector;
