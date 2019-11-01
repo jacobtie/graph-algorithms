@@ -272,7 +272,14 @@ namespace graph_algorithms.data_structures
 
         public string ToAdjacencyMatrix()
         {
-            string adjMat = "\n";
+            string adjMat = "";
+
+            for (int i = 0; i < Vertices.Count * 9; i++)
+            {
+                adjMat += "-";
+            }
+
+            adjMat += "\n";
 
             adjMat += "\t";
 
@@ -316,6 +323,13 @@ namespace graph_algorithms.data_structures
 
                 adjMat += "\n";
             }
+
+            for (int i = 0; i < Vertices.Count * 9; i++)
+            {
+                adjMat += "-";
+            }
+
+            adjMat += "\n";
 
             return adjMat;
         }
