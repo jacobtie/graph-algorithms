@@ -14,8 +14,14 @@ namespace graph_algorithms
 
             if (graph.GraphType != DirectedType.Undirected)
             {
-                throw new Exception("Kruskal's Algorithm cannot be performed on a " + 
+                throw new Exception("Kruskal's Algorithm cannot be performed on a " +
                                     "directed graph. ");
+            }
+
+            if (!graph.IsConnected())
+            {
+                throw new Exception("This implementation of Kruskal's Algorithm can only " +
+                                    "be performed on connected graphs.");
             }
 
             var minSpanTree = new Graph<T>(graph);
@@ -27,11 +33,11 @@ namespace graph_algorithms
                 heap.Add(e);
             }
 
-            while(!heap.isEmpty())
+            while (!heap.isEmpty())
             {
                 var min = heap.RemoveMin();
 
-                if (cloud.Contains(min.EndVertices.start.Element) && 
+                if (cloud.Contains(min.EndVertices.start.Element) &&
                     cloud.Contains(min.EndVertices.end.Element))
                 {
                     minSpanTree.RemoveEdge(min);

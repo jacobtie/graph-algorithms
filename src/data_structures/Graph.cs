@@ -168,6 +168,47 @@ namespace graph_algorithms.data_structures
         }
 
         /// <summary>
+        /// Returns whether or not an undirected graph is a connected graph. NOTE that this only works for undirected graphs.
+        /// </summary>
+        /// <returns>A boolean indicating if an undirected graph is connected</returns>
+        public bool IsConnected()
+        {
+            if (GraphType != DirectedType.Undirected)
+            {
+                throw new Exception("This method is only implemented for undirected graphs");
+            }
+
+            var dfsVertices = _vertices.Select(v => new DFSVertex<E>(v, DFSColor.White)).ToList();
+
+            _dfsVisit(dfsVertices, Edges, dfsVertices[0]);
+
+            bool success = true;
+            foreach (var vertex in dfsVertices)
+            {
+                if (vertex.Color != DFSColor.Black)
+                {
+                    success = false;
+                }
+            }
+
+            return success;
+        }
+
+        private void _dfsVisit(List<DFSVertex<E>> vertices, List<Edge<E>> edges, DFSVertex<E> currentVertex)
+        {
+            currentVertex.Color = DFSColor.Gray;
+            foreach (var neighbor in this.GetAdjacentVertices(currentVertex.Vertex))
+            {
+                var dfsVertex = vertices.Find(dfsV => dfsV.Vertex == neighbor);
+                if (dfsVertex.Color == DFSColor.White)
+                {
+                    _dfsVisit(vertices, edges, dfsVertex);
+                }
+            }
+            currentVertex.Color = DFSColor.Black;
+        }
+
+        /// <summary>
         /// Builds a graph using an input file
         /// </summary>
         /// <param name="inputFile">The filepath from which to build the graph</param>
@@ -297,11 +338,11 @@ namespace graph_algorithms.data_structures
                 foreach (var y in Vertices)
                 {
                     Edge<E> e;
-                    
+
                     if (GraphType == DirectedType.Undirected)
                     {
                         e = Edges.Find(edge => (edge.EndVertices.start.Element.Equals(x.Element) &&
-                            edge.EndVertices.end.Element.Equals(y.Element)) || 
+                            edge.EndVertices.end.Element.Equals(y.Element)) ||
                             (edge.EndVertices.start.Element.Equals(y.Element) &&
                             edge.EndVertices.end.Element.Equals(x.Element)));
                     }
@@ -309,7 +350,7 @@ namespace graph_algorithms.data_structures
                     {
                         e = Edges.Find(edge => (edge.EndVertices.start.Element.Equals(x.Element) &&
                             edge.EndVertices.end.Element.Equals(y.Element)));
-                    }   
+                    }
 
                     if (e != null)
                     {
