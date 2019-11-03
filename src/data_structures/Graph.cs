@@ -180,7 +180,7 @@ namespace graph_algorithms.data_structures
 
             var dfsVertices = _vertices.Select(v => new DFSVertex<E>(v, DFSColor.White)).ToList();
 
-            _dfsVisit(dfsVertices, Edges, dfsVertices[0]);
+            _dfsVisit(dfsVertices, dfsVertices[0]);
 
             bool success = true;
             foreach (var vertex in dfsVertices)
@@ -194,7 +194,7 @@ namespace graph_algorithms.data_structures
             return success;
         }
 
-        private void _dfsVisit(List<DFSVertex<E>> vertices, List<Edge<E>> edges, DFSVertex<E> currentVertex)
+        private void _dfsVisit(List<DFSVertex<E>> vertices, DFSVertex<E> currentVertex)
         {
             currentVertex.Color = DFSColor.Gray;
             foreach (var neighbor in this.GetAdjacentVertices(currentVertex.Vertex))
@@ -202,7 +202,7 @@ namespace graph_algorithms.data_structures
                 var dfsVertex = vertices.Find(dfsV => dfsV.Vertex == neighbor);
                 if (dfsVertex.Color == DFSColor.White)
                 {
-                    _dfsVisit(vertices, edges, dfsVertex);
+                    _dfsVisit(vertices, dfsVertex);
                 }
             }
             currentVertex.Color = DFSColor.Black;
