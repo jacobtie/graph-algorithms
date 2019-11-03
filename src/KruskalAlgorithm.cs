@@ -1,5 +1,6 @@
 using graph_algorithms.data_structures;
 using System.Collections.Generic;
+using graph_algorithms.logging;
 using System;
 
 namespace graph_algorithms
@@ -8,10 +9,13 @@ namespace graph_algorithms
     {
         public static Graph<T> RunKruskal(Graph<T> graph)
         {
+            Logger.WriteLine("\nOriginal Graph as Adjacency Matrix: ");
+            Logger.WriteLine(graph.ToAdjacencyMatrix());
+
             if (graph.GraphType != DirectedType.Undirected)
             {
-                throw new Exception("Directed Graphs are not supported for this " +
-                                    "implementation of the Kruskal Algorithm. ");
+                throw new Exception("Kruskal's Algorithm cannot be performed on a " + 
+                                    "directed graph. ");
             }
 
             var minSpanTree = new Graph<T>(graph);
@@ -27,19 +31,26 @@ namespace graph_algorithms
             {
                 var min = heap.RemoveMin();
 
+                if (cloud.Contains(min.EndVertices.start.Element) && 
+                    cloud.Contains(min.EndVertices.end.Element))
+                {
+                    minSpanTree.RemoveEdge(min);
+                    continue;
+                }
+
                 if (!cloud.Contains(min.EndVertices.start.Element))
                 {
                     cloud.Add(min.EndVertices.start.Element);
                 }
-                else if (!cloud.Contains(min.EndVertices.end.Element))
+
+                if (!cloud.Contains(min.EndVertices.end.Element))
                 {
                     cloud.Add(min.EndVertices.end.Element);
                 }
-                else
-                {
-                    minSpanTree.RemoveEdge(min);
-                }
             }
+
+            Logger.WriteLine("\nMinimum Spanning Tree created by the Kruskal Algorithm: ");
+            Logger.WriteLine(minSpanTree.ToAdjacencyMatrix());
 
             return minSpanTree;
         }

@@ -189,7 +189,7 @@ namespace graph_algorithms.data_structures
                         var line = reader.ReadLine();
                         if (line is null)
                         {
-                            throw new Exception("Line not read");
+                            throw new Exception("No line could be read from the file. ");
                         }
                         lines.Add(line);
                     }
@@ -202,7 +202,7 @@ namespace graph_algorithms.data_structures
 
             if (firstLine is null)
             {
-                throw new Exception("Line not read");
+                throw new Exception("No line could be read from the file. ");
             }
 
             var firstLineValues = firstLine.Split(' ');
@@ -212,12 +212,12 @@ namespace graph_algorithms.data_structures
 
             if (!int.TryParse(firstLineValues[0], out numVertices))
             {
-                throw new FormatException("NumVertices not an integer");
+                throw new FormatException("The number of vertices is not an integer. ");
             }
 
             if (firstLineValues[2] != "D" && firstLineValues[2] != "U")
             {
-                throw new FormatException("Graph type must be D or U");
+                throw new FormatException("The graph type must be D or U. ");
             }
 
             graphType = firstLineValues[2] switch
@@ -247,13 +247,13 @@ namespace graph_algorithms.data_structures
                     int weight;
                     if (!int.TryParse(lineValues[2], out weight) && weight <= 0)
                     {
-                        throw new FormatException("Weight not a positive integer");
+                        throw new FormatException("A weight not a positive integer. ");
                     }
                     var startVertex = vertices.Find(v => v.Element == startLetter);
                     var endVertex = vertices.Find(v => v.Element == endLetter);
                     if (startVertex is null || endVertex is null)
                     {
-                        throw new Exception("Vertex not found");
+                        throw new Exception("A vertex could not be found. ");
                     }
                     builtGraph.InsertEdge(startVertex, endVertex, weight);
                 }
@@ -263,7 +263,7 @@ namespace graph_algorithms.data_structures
                 }
                 else
                 {
-                    throw new FormatException("Unexpected number of values in graph input");
+                    throw new FormatException("There is an unexpected number of values in the graph input. ");
                 }
             }
 

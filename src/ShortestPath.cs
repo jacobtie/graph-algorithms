@@ -17,17 +17,18 @@ namespace graph_algorithms
             Logger.WriteLine("\nOriginal Graph as Adjacency Matrix: ");
             Logger.WriteLine(graph.ToAdjacencyMatrix());
 
+            Logger.WriteLine("Beginning Dijkstra's Algorithm... \n");
             foreach (var v in paths.Vertices)
             {
                 PathElement<T> newElement;
 
                 if (!v.Element.Equals(start.Element))
                 {
-                    newElement = new PathElement<T>(v, null, int.MaxValue);
+                    newElement = new PathElement<T>(v, null, null, int.MaxValue);
                 }
                 else
                 {
-                    newElement = new PathElement<T>(v, null, 0);
+                    newElement = new PathElement<T>(v, null, null, 0);
                 }
 
                 costs.Add(v.Element, newElement);
@@ -36,6 +37,7 @@ namespace graph_algorithms
             UpdateCosts(paths, costs[currentElement].currVertex, costs);
             finalized.Add(currentElement);
             currentElement = FindMinCostVertex(paths, costs, finalized);
+            Logger.WriteLine();
 
             do 
             {
@@ -45,8 +47,12 @@ namespace graph_algorithms
                 RemoveEdgesInCloud(paths, finalized, costs);
 
                 currentElement = FindMinCostVertex(paths, costs, finalized);
+
+                Logger.WriteLine();
             }
             while(finalized.Count != paths.NumVertices);
+
+            Logger.WriteLine("\nFinished Dijkstra's Algorithm. ");
 
             Logger.WriteLine("\nGraph after Extraneous Edges have been Removed: ");
             Logger.WriteLine(paths.ToAdjacencyMatrix());
@@ -57,6 +63,13 @@ namespace graph_algorithms
         private static void UpdateCosts(Graph<T> graph, Vertex<T> curr, 
                                         Dictionary<T, PathElement<T>> costs)
         {
+            Logger.WriteLine("Current Node being Finalized: " + curr.Element + " - " + costs[curr.Element].cost);
+
+            if (costs[curr.Element].cost == int.MaxValue)
+            {
+                return;
+            }
+
             List<Edge<T>> adjEdges;
 
             if (graph.GraphType == DirectedType.Undirected)
@@ -70,14 +83,22 @@ namespace graph_algorithms
 
             foreach (var e in adjEdges)
             {
-                var currElement = e.EndVertices.end.Element;
-                var prevElement = e.EndVertices.start.Element;
+                T nextElement; 
 
-                if (costs[prevElement].cost + e.Weight < costs[currElement].cost)
+                if (!curr.Element.Equals(e.EndVertices.start.Element))
                 {
-                    costs[currElement] = new PathElement<T>(costs[currElement].currVertex, 
-                                                            costs[prevElement].currVertex, 
-                                                            costs[prevElement].cost + e.Weight);
+                    nextElement = e.EndVertices.start.Element;
+                }
+                else
+                {
+                    nextElement = e.EndVertices.end.Element;
+                }
+
+                if (costs[curr.Element].cost + e.Weight < costs[nextElement].cost)
+                {
+                    Logger.WriteLine("Current Node being Updated: " + nextElement + " - " + (costs[curr.Element].cost + e.Weight));
+                    costs[nextElement] = new PathElement<T>(costs[nextElement].currVertex, curr, e, 
+                                                            costs[curr.Element].cost + e.Weight);
                 }
             }
         }
@@ -87,45 +108,29 @@ namespace graph_algorithms
         {
             List<Edge<T>> adjEdges;
             
-            if (graph.GraphType == DirectedType.Undirected)
-            {
-                adjEdges = graph.GetIncidentEdges(graph.Vertices.Find(vertex => 
+            adjEdges = graph.GetIncidentEdges(graph.Vertices.Find(vertex => 
                                                 vertex.Element.Equals(finalized.Last())));
-            }
-            else
-            {
-                adjEdges = graph.GetInEdges(graph.Vertices.Find(vertex => 
-                                                vertex.Element.Equals(finalized.Last())));
-            }
 
             PathElement<T> last = costs[finalized.Last()];
 
-            foreach (var edge in adjEdges)
+            foreach (var e in adjEdges)
             {
-                T element; 
-
-                if (!last.currVertex.Element.Equals(edge.EndVertices.start.Element))
+                if (finalized.Contains(e.EndVertices.start.Element) && 
+                    finalized.Contains(e.EndVertices.end.Element))
                 {
-                    element = edge.EndVertices.start.Element;
-                }
-                else
-                {
-                    element = edge.EndVertices.end.Element;
-                }
-
-                if (finalized.Contains(element) &&
-                    (edge.Weight + costs[element].cost > costs[last.currVertex.Element].cost || 
-                    (edge.Weight + costs[element].cost == costs[last.currVertex.Element].cost && 
-                    !element.Equals(last.prevVertex.Element))))
-                {
-                    graph.RemoveEdge(edge);
+                    if (last.inEdge == null || !e.Equals(last.inEdge))
+                    {
+                        Logger.WriteLine("Removed Edge: " + e.EndVertices.start.Element + " " + 
+                                            e.EndVertices.end.Element + " " + e.Weight);
+                        graph.RemoveEdge(e);
+                    }
                 }
             }
         }
 
         private static T FindMinCostVertex(Graph<T> graph, 
-                                                    Dictionary<T, PathElement<T>> costs, 
-                                                    List<T> finalized)
+                                            Dictionary<T, PathElement<T>> costs, 
+                                            List<T> finalized)
         {
             T minElement = default(T);
             int min = int.MaxValue;
