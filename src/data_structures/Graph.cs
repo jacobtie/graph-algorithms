@@ -182,16 +182,17 @@ namespace graph_algorithms.data_structures
 
             _dfsVisit(dfsVertices, dfsVertices[0]);
 
-            bool success = true;
+            bool connected = true;
             foreach (var vertex in dfsVertices)
             {
                 if (vertex.Color != DFSColor.Black)
                 {
-                    success = false;
+                    connected = false;
+                    break;
                 }
             }
 
-            return success;
+            return connected;
         }
 
         private void _dfsVisit(List<DFSVertex<E>> vertices, DFSVertex<E> currentVertex)
