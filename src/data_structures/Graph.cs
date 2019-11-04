@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace graph_algorithms.data_structures
 {
@@ -239,7 +240,7 @@ namespace graph_algorithms.data_structures
                 throw new Exception("No line could be read from the file. ");
             }
 
-            var firstLineValues = firstLine.Split(' ');
+            var firstLineValues = Regex.Split(firstLine, @"\s");
 
             int numVertices;
             DirectedType graphType;
@@ -273,7 +274,7 @@ namespace graph_algorithms.data_structures
             var vertices = builtGraph.Vertices;
             foreach (var line in lines)
             {
-                var lineValues = line.Split(' ');
+                var lineValues = Regex.Split(line, @"\s");
                 if (lineValues.Length == 3)
                 {
                     var startLetter = lineValues[0];
