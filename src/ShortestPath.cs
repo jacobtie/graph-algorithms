@@ -50,16 +50,6 @@ namespace graph_algorithms
                 costs.Add(v.Element, newElement);
             }
 
-            // // Update the cost based on the current vertex being finalized
-            // UpdateCosts(paths, costs[currentElement].currVertex, costs);
-
-            // // Finalize the current vertex
-            // finalized.Add(currentElement);
-
-            // // Set the current element equal to the closest, unfinalized vertex
-            // currentElement = FindMinCostVertex(paths, costs, finalized);
-            // Logger.WriteLine();
-
             // Do while all nodes are not finalized
             do
             {

@@ -65,12 +65,12 @@ namespace graph_algorithms.data_structures
                 Logger.WriteLine(ToString());
                 Logger.WriteLine();
 
-                // Return false to indicate that each end point is part of its own set
-                return false;
+                // Return true to indicate that each end point is part of its own set
+                return true;
             }
 
-            // Return true to indicate that both end points are part of the same set
-            return true;
+            // Return false to indicate that both end points are part of the same set
+            return false;
         }
 
         public override string ToString()

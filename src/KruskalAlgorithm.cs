@@ -53,7 +53,7 @@ namespace graph_algorithms
                 var currEdge = heap.RemoveMin();
 
                 // If the end points of the current edge are not part of the same set
-                if (!disjointSet.Union(currEdge))
+                if (disjointSet.Union(currEdge))
                 {
                     // Insert the edge into the minimum spanning tree
                     minSpanTree.InsertEdge(currEdge.EndVertices.start, 
