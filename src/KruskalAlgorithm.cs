@@ -2,7 +2,6 @@ using graph_algorithms.data_structures;
 using System.Linq;
 using graph_algorithms.logging;
 using System;
-using System.Linq;
 
 namespace graph_algorithms
 {
