@@ -46,12 +46,16 @@ namespace graph_algorithms
                 heap.Add(e);
             }
 
+            // While there are still edges to potentially add
             while(!heap.isEmpty())
             {
+                // Get the edge at the top of the heap
                 var currEdge = heap.RemoveMin();
 
+                // If the end points of the current edge are not part of the same set
                 if (!disjointSet.Union(currEdge))
                 {
+                    // Insert the edge into the minimum spanning tree
                     minSpanTree.InsertEdge(currEdge.EndVertices.start, 
                                             currEdge.EndVertices.end, currEdge.Weight);
                 }
@@ -59,9 +63,10 @@ namespace graph_algorithms
 
             Logger.WriteLine("Finished Kruskal's Algorithm. \n");
 
+            // Get the total weight of the minimum spanning tree
             int totalWeight = minSpanTree.Edges.Sum(e => e.Weight);
 
-            // Print the minimum spanning tree as an adjacency matrix
+            // Print the minimum spanning tree as an adjacency matrix with total weight
             Logger.WriteLine("\nMinimum Spanning Tree created by the Kruskal Algorithm: ");
             Logger.WriteLine("The total weight of the MST is " + totalWeight + ". ");
             Logger.WriteLine(minSpanTree.ToAdjacencyMatrix());
