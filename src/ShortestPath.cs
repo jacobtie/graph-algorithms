@@ -8,7 +8,8 @@ namespace graph_algorithms
     static class ShortestPath<T>
     {
         // Method to perform Dijkstra's Algorithm by getting the paths and creating the tree
-        public static Dictionary<T, PathElement<T>> RunDijkstras(Graph<T> graph, Vertex<T> start)
+        public static (Dictionary<T, PathElement<T>>, Vertex<T> s) RunDijkstras(Graph<T> graph, 
+                                                                                Vertex<T> start)
         {
             // Create graph to store the tree of shortest paths
             var paths = new Graph<T>(graph);
@@ -18,6 +19,11 @@ namespace graph_algorithms
 
             // Create dictionary to store the relation between the vertices and their path
             var costs = new Dictionary<T, PathElement<T>>(paths.Vertices.Count);
+
+            if (start == null)
+            {
+                start = GetUserInput(graph);
+            }
 
             // Create variable to store the current node being finalized
             var currentElement = start.Element;
@@ -74,7 +80,7 @@ namespace graph_algorithms
             Logger.WriteLine("\nGraph after Extraneous Edges have been Removed: ");
             Logger.WriteLine(paths.ToAdjacencyMatrix());
 
-            return costs;
+            return (costs, start);
         }
 
         // Method to update the costs by looking at the neighbors of the current vertex
@@ -202,6 +208,31 @@ namespace graph_algorithms
 
             // Return the minimum element
             return minElement;
+        }
+
+        // Get the starting vertex by asking the user to enter the element
+        private static Vertex<T> GetUserInput(Graph<T> graph)
+        {
+            
+            Vertex<T> start = null;
+            string allInput;
+
+            Logger.WriteLine("\nStarting vertex could not be found in the file. ");
+
+            do
+            {
+                Logger.WriteLine("\nWhat would you like the starting vertex to be? ");
+                allInput = Logger.ReadLine();
+
+                if (allInput.Length > 0)
+                {
+                    allInput = allInput.ToUpper()[0].ToString();
+                    start = graph.Vertices.Find(v => v.Element.Equals(allInput));
+                }
+            }
+            while(start == null);
+
+            return start;
         }
     }
 }

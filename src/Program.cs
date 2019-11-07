@@ -94,8 +94,8 @@ namespace graph_algorithms
                 if (input == 1)
                 {
                     // Run Dijkstra's and print the list of paths to each node
-                    var paths = ShortestPath<string>.RunDijkstras(graph, start);
-                    PrintPaths(paths, start);
+                    (var paths, var s) = ShortestPath<string>.RunDijkstras(graph, start);
+                    PrintPaths(paths, s);
                 }
                 // Else the user inputted two
                 else
