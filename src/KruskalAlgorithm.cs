@@ -2,6 +2,7 @@ using graph_algorithms.data_structures;
 using System.Linq;
 using graph_algorithms.logging;
 using System;
+using System.Linq;
 
 namespace graph_algorithms
 {
@@ -65,6 +66,8 @@ namespace graph_algorithms
             Logger.WriteLine("\nMinimum Spanning Tree created by the Kruskal Algorithm: ");
             Logger.WriteLine("The total weight of the MST is " + totalWeight + ". ");
             Logger.WriteLine(minSpanTree.ToAdjacencyMatrix());
+            var totalCost = minSpanTree.Edges.Aggregate(0, (sum, edge) => sum += edge.Weight);
+            Logger.WriteLine($"Total Graph Edge Cost: {totalCost}");
 
             // Return the minimum spanning tree
             return minSpanTree;
