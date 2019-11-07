@@ -50,18 +50,18 @@ namespace graph_algorithms
                 costs.Add(v.Element, newElement);
             }
 
-            // Update the cost based on the current vertex being finalized
-            UpdateCosts(paths, costs[currentElement].currVertex, costs);
+            // // Update the cost based on the current vertex being finalized
+            // UpdateCosts(paths, costs[currentElement].currVertex, costs);
 
-            // Finalize the current vertex
-            finalized.Add(currentElement);
+            // // Finalize the current vertex
+            // finalized.Add(currentElement);
 
-            // Set the current element equal to the closest, unfinalized vertex
-            currentElement = FindMinCostVertex(paths, costs, finalized);
-            Logger.WriteLine();
+            // // Set the current element equal to the closest, unfinalized vertex
+            // currentElement = FindMinCostVertex(paths, costs, finalized);
+            // Logger.WriteLine();
 
             // Do while all nodes are not finalized
-            do 
+            do
             {
                 // Update the cost based on the current vertex being finalized
                 UpdateCosts(paths, costs[currentElement].currVertex, costs);
@@ -76,7 +76,7 @@ namespace graph_algorithms
                 currentElement = FindMinCostVertex(paths, costs, finalized);
                 Logger.WriteLine();
             }
-            while(finalized.Count != paths.NumVertices);
+            while (finalized.Count != paths.NumVertices);
 
             Logger.WriteLine("\nFinished Dijkstra's Algorithm. ");
 
@@ -88,7 +88,7 @@ namespace graph_algorithms
         }
 
         // Method to update the costs by looking at the neighbors of the current vertex
-        private static void UpdateCosts(Graph<T> graph, Vertex<T> curr, 
+        private static void UpdateCosts(Graph<T> graph, Vertex<T> curr,
                                         Dictionary<T, PathElement<T>> costs)
         {
             // Print current vertex element and the cost to reach that vertex
@@ -120,7 +120,7 @@ namespace graph_algorithms
             foreach (var e in adjEdges)
             {
                 // Create variable to store the element of the connected vertex
-                T nextElement; 
+                T nextElement;
 
                 // If the starting vertex of the current edge is not the current vertex
                 if (!curr.Element.Equals(e.EndVertices.start.Element))
@@ -142,22 +142,22 @@ namespace graph_algorithms
                     // Set the previous vertex, previous edge, and cost of the current vertex
                     // equal to the current vertex, current edge, and new cost
                     Logger.WriteLine("Current Node being Updated: " + nextElement + " - " + (costs[curr.Element].cost + e.Weight));
-                    costs[nextElement] = new PathElement<T>(costs[nextElement].currVertex, curr, e, 
+                    costs[nextElement] = new PathElement<T>(costs[nextElement].currVertex, curr, e,
                                                             costs[curr.Element].cost + e.Weight);
                 }
             }
         }
 
         // Method to remove extraneous edges that are not part of the shortest paths
-        private static void RemoveEdgesInCloud(Graph<T> graph, List<T> finalized, 
+        private static void RemoveEdgesInCloud(Graph<T> graph, List<T> finalized,
                                                 Dictionary<T, PathElement<T>> costs)
         {
             // Create List to store the adjacent edges of the most-recently finalized vertex
             List<Edge<T>> adjEdges;
-            
+
             // Get the path element related to the most-recently finalized vertex
             PathElement<T> last = costs[finalized.Last()];
-            
+
             // Get all edges that lead to or come from the last vertex
             adjEdges = graph.GetIncidentEdges(last.currVertex);
 
@@ -165,14 +165,14 @@ namespace graph_algorithms
             foreach (var e in adjEdges)
             {
                 // If both vertices of the current edge are finalized
-                if (finalized.Contains(e.EndVertices.start.Element) && 
+                if (finalized.Contains(e.EndVertices.start.Element) &&
                     finalized.Contains(e.EndVertices.end.Element))
                 {
                     // If the previous edge of the last vertex is equal to the current edge
                     if (last.inEdge == null || !e.Equals(last.inEdge))
                     {
                         // Remove the current edge from the graph
-                        Logger.WriteLine("Removed Edge: " + e.EndVertices.start.Element + " " + 
+                        Logger.WriteLine("Removed Edge: " + e.EndVertices.start.Element + " " +
                                             e.EndVertices.end.Element + " " + e.Weight);
                         graph.RemoveEdge(e);
                     }
@@ -181,8 +181,8 @@ namespace graph_algorithms
         }
 
         // Method to find the minimum-cost vertex that is not yet finalized
-        private static T FindMinCostVertex(Graph<T> graph, 
-                                            Dictionary<T, PathElement<T>> costs, 
+        private static T FindMinCostVertex(Graph<T> graph,
+                                            Dictionary<T, PathElement<T>> costs,
                                             List<T> finalized)
         {
             // Create variables to store the minimum element and value of the list of vertices

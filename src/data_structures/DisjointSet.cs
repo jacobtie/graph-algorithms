@@ -35,7 +35,8 @@ namespace graph_algorithms.data_structures
             if (!parents[element].Equals(element))
             {
                 // Call the Find method again until the root of the set is found
-                return Find(parents[element]);
+                parents[element] = Find(parents[element]);
+                return parents[element];
             }
 
             // Return the root of the set
@@ -60,7 +61,7 @@ namespace graph_algorithms.data_structures
                 // Combine the two sets 
                 parents[root2] = root1;
 
-                Logger.WriteLine("Added Edge to the Graph: " + element1 + " " + element2 + 
+                Logger.WriteLine("Added Edge to the Graph: " + element1 + " " + element2 +
                                 " " + edge.Weight);
                 Logger.WriteLine("List of Roots for the Set of each Vertex: ");
                 Logger.WriteLine("---------------------------------");
@@ -79,9 +80,9 @@ namespace graph_algorithms.data_structures
         {
             string sets = "|Vertex\t|Root\t|\n";
 
-            foreach((var v, var p) in parents)
+            foreach (var (v, p) in parents)
             {
-                sets += "|" + v + " \t|" + Find(v) + "\t|\n";
+                sets += "|" + v + " \t|" + p + "\t|\n";
             }
 
             return sets;
