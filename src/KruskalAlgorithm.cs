@@ -1,5 +1,5 @@
 using graph_algorithms.data_structures;
-using System.Collections.Generic;
+using System.Linq;
 using graph_algorithms.logging;
 using System;
 
@@ -30,14 +30,14 @@ namespace graph_algorithms
                                     "be performed on connected graphs.");
             }
 
-            // Create Graph to store the minimum spanning tree
-            var minSpanTree = new Graph<T>(graph);
+            Logger.WriteLine("Running Kruskal's Algorithm... \n");
 
             // Create min heap to store all of the edges in the graph
             var heap = new MinHeap<Edge<T>>();
 
-            // Create List to store the vertices in the cloud 
-            var cloud = new List<T>();
+            var minSpanTree = new Graph<T>(graph.Vertices);
+
+            var disjointSet = new DisjointSet<T>(graph.Vertices);
 
             // For each edge in the graph
             foreach (var e in graph.Edges)
@@ -46,40 +46,24 @@ namespace graph_algorithms
                 heap.Add(e);
             }
 
-            // While the heap is not empty
-            while (!heap.isEmpty())
+            while(!heap.isEmpty())
             {
-                // Create variable to store the top edge of the heap
-                var min = heap.RemoveMin();
+                var currEdge = heap.RemoveMin();
 
-                // If the cloud contains the start and end vertices of the current edge
-                if (cloud.Contains(min.EndVertices.start.Element) &&
-                    cloud.Contains(min.EndVertices.end.Element))
+                if (!disjointSet.Union(currEdge))
                 {
-                    // Remove the current edge from the graph
-                    minSpanTree.RemoveEdge(min);
-
-                    // Continue to the next iteration of the foreach loop
-                    continue;
-                }
-
-                // If the cloud does not contain the starting vertex of the current edge
-                if (!cloud.Contains(min.EndVertices.start.Element))
-                {
-                    // Add the starting vertex of the current edge to the cloud
-                    cloud.Add(min.EndVertices.start.Element);
-                }
-
-                // If the cloud does not contain the ending vertex of the current edge
-                if (!cloud.Contains(min.EndVertices.end.Element))
-                {
-                    // Add the ending vertex of the current edge to the cloud
-                    cloud.Add(min.EndVertices.end.Element);
+                    minSpanTree.InsertEdge(currEdge.EndVertices.start, 
+                                            currEdge.EndVertices.end, currEdge.Weight);
                 }
             }
 
+            Logger.WriteLine("Finished Kruskal's Algorithm. \n");
+
+            int totalWeight = minSpanTree.Edges.Sum(e => e.Weight);
+
             // Print the minimum spanning tree as an adjacency matrix
             Logger.WriteLine("\nMinimum Spanning Tree created by the Kruskal Algorithm: ");
+            Logger.WriteLine("The total weight of the MST is " + totalWeight + ". ");
             Logger.WriteLine(minSpanTree.ToAdjacencyMatrix());
 
             // Return the minimum spanning tree

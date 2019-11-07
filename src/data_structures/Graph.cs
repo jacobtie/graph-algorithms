@@ -59,6 +59,17 @@ namespace graph_algorithms.data_structures
         }
 
         /// <summary>
+        /// Graph constructor which takes in list of vertices
+        /// </summary>
+        /// <param name="vertices">A new list of vertices</param>
+        public Graph(List<Vertex<E>> vertices)
+        {
+            GraphType = DirectedType.Undirected;
+            _vertices = new List<Vertex<E>>(vertices);
+            _edges = new List<Edge<E>>();
+        }
+
+        /// <summary>
         /// Copy constructor using another graph
         /// </summary>
         /// <param name="other">Other graph to copy</param>

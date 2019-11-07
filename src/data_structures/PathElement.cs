@@ -1,3 +1,5 @@
+using System;
+
 namespace graph_algorithms.data_structures
 {
         struct PathElement<T>
