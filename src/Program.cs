@@ -21,8 +21,10 @@ namespace graph_algorithms
             }
             while(input);
 
-            Logger.WriteLine("\nPress enter to exit....");
-            Logger.ReadLine();
+            Logger.LogToFile();
+
+            Console.WriteLine("\nPress enter to exit....");
+            Console.ReadLine();
         }
 
         // Method to get user input and choose which algorithm to run

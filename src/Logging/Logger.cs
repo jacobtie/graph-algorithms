@@ -70,13 +70,13 @@ namespace graph_algorithms.logging
         /// logs directory as a txt file with a filename of "log_" followed by the time in milliseconds
         /// </summary>
         /// <returns></returns>
-        public static async void LogToFileAsync()
+        public static void LogToFile()
         {
             var fileName = $"logs/log_{DateTime.UtcNow.ToFileTimeUtc()}.txt";
 
             using (var writer = new StreamWriter(fileName))
             {
-                await writer.WriteAsync(_sb);
+                writer.Write(_sb);
             }
         }
     }
