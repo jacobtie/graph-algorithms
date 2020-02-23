@@ -1,4 +1,4 @@
-# Assignment II - Graph Algorithms
+# Graph Algorithms
 
 ## How to Run
 
